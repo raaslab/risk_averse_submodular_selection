@@ -153,37 +153,60 @@ end
 delta = 0.2; 
 
 % the sampling times for approximating CVaR
-n_s = 50;
+n_s = 100;
 
 %store alpha and the associated area covered
-gre_area_cover = [];
+cvar_gre_area = [];
 
 %store the probability of success
-gre_p_success = []; 
+cvar_gre_p = []; 
+
+%store alpha and the associated area covered
+cvar_opt_area = [];
+
+%store the probability of success
+cvar_opt_p = []; 
+
 
 
 for alpha = 0.001 : 0.09 : 1
 
-%CVaR measure with the greedy and the optimal
-[cvar_gre_set, cvar_gre_value] = ...
-    CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
+% %CVaR measure with the greedy and the optimal
+% [cvar_gre_set, cvar_gre_value] = ...
+%     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
 
-[u_area, u_p] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
-gre_area_cover = [gre_area_cover; [alpha, u_area]]; 
-gre_p_success = [gre_p_success; [alpha, u_p]]; 
+% cvar+ opt
+[cvar_opt_set, cvar_opt_value] = ...
+    CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s); 
+
+
+% %cvar + greedy data
+% [cvar_gre_area_temp, cvar_gre_p_temp] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
+% cvar_gre_area = [cvar_gre_area; [alpha, cvar_gre_area_temp]]; 
+% cvar_gre_p = [cvar_gre_p; [alpha, cvar_gre_p_temp]]; 
+
+
+%cvar + opt data
+[cvar_opt_area_temp, cvar_opt_p_temp] = union_area_p(cvar_opt_set, vis_binary, pr_sensor); 
+cvar_opt_area = [cvar_opt_area; [alpha, cvar_opt_area_temp]]; 
+cvar_opt_p = [cvar_opt_p; [alpha, cvar_opt_p_temp]]; 
+
+
 end
 
 
-figure (2)
-plot(gre_area_cover(:,1), gre_area_cover(:,2), 'r*'); hold on
+% figure (2)
+% plot(cvar_gre_area(:,1), cvar_gre_area(:,2), 'r*'); hold on
+% 
+% figure (3)
+% plot(cvar_gre_p(:,1), cvar_gre_p(:,2), 'b'); hold on
 
-figure (3)
-plot(gre_p_success(:,1), gre_p_success(:,2), 'b'); hold on
 
 figure (4)
+plot(cvar_opt_area(:,1), cvar_opt_area(:,2), 'r*'); hold on
 
-% [cvar_opt_set, cvar_opt_value] = ...
-%     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s); 
+figure (5)
+plot(cvar_opt_p(:,1), cvar_opt_p(:,2), 'b'); hold on
 
 
 %Expectation with the greedy and the optimal

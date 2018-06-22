@@ -1,10 +1,10 @@
 % funtion: approximate the value of the auxiliary function H by sampling
 
-function H_appro = H_approximate_bernoulli(gre_set, tau, alpha, vis_binary, pr_sensor, n_s)
+function H_appro = H_approximate_bernoulli(set, tau, alpha, vis_binary, pr_sensor, n_s)
 
      global poly_large
      
-     if isempty(gre_set) == 1
+     if isempty(set) == 1
          
         H_appro = tau * (1 - 1/alpha);
      
@@ -27,14 +27,14 @@ function H_appro = H_approximate_bernoulli(gre_set, tau, alpha, vis_binary, pr_s
             % keep in mind that we enlarge the area by 100 times
             union_binary = zeros(9*poly_large, 9*poly_large); 
             
-            for j = 1 : length(gre_set)
+            for j = 1 : length(set)
                % find the inx of the sensor gre_set(j)
                % find its binary value
-               bernoulli_j = binornd(1, pr_sensor(gre_set(j))); 
+               bernoulli_j = binornd(1, pr_sensor(set(j))); 
                
                % union sensor visbility_area together
                % bernoulli_j can be zero and one. 
-               union_binary =  (union_binary) | (bernoulli_j * vis_binary{1, gre_set(j)}); 
+               union_binary =  (union_binary) | (bernoulli_j * vis_binary{1, set(j)}); 
                
             end
             

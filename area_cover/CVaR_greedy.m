@@ -82,7 +82,7 @@ function [cvar_gre_set, cvar_gre_value] = ...
        
         
         %store cvar
-        H_vaule(cnt, 1) = H_last;
+        H_value(cnt, 1) = H_last;
         
         %store set in the second to end
         H_set(cnt, :) = gre_set;

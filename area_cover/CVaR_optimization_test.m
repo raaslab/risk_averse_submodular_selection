@@ -7,7 +7,7 @@
 N = 10;
 
 %select 5 from it. 
-M = 4; 
+M = 3; 
 
 %define reward 
 reward = 100* rand(N,1);

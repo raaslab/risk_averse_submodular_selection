@@ -82,7 +82,7 @@ function [cvar_gre_set, cvar_gre_value] = ...
        
         
         %store cvar
-        H_value(cnt, 1) = H_last;
+        H_value(cnt) = H_last;
         
         %store set in the second to end
         H_set(cnt, :) = gre_set;
@@ -91,7 +91,7 @@ function [cvar_gre_set, cvar_gre_value] = ...
         %after we have the H_value, we can decide which one to choose by
         % 1-1/e for the uniform matroid
         % for each tau we have an upper bound for each H_star_values. (H(s*, iDelta))
-        H_star_values(cnt, 1) = H_vaule(cnt, 1) - (1/exp(1))* tau * (1 - 1/alpha); 
+        H_star_values(cnt) = H_value(cnt) + (1/exp(1))* tau * (1/alpha -1); 
         
         
         cnt = cnt +1;      
@@ -100,12 +100,12 @@ function [cvar_gre_set, cvar_gre_value] = ...
    % we use H_star_values to decide which one to choose 
    % max of the upper bounds
    % we only need the first one
-   max_Hstar_inx = find(H_star_values(:,1) == max(H_star_values(:,1)),1); 
+   max_Hstar_inx = find(H_star_values == max(H_star_values),1); 
    
    % find the associated set we choose
    cvar_gre_set = H_set(max_Hstar_inx, :); 
    
    % find the associated cvar_gre_value by the greedy approach
-   cvar_gre_value = H_vaule(max_Hstar_inx, 1);
+   cvar_gre_value = H_value(max_Hstar_inx);
     
 end

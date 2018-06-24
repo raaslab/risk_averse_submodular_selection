@@ -4,10 +4,10 @@
 % greedily select 5 from them to maximize the CVaR
 
 %total number of sensors
-N = 10;
+N = 15;
 
 %select 5 from it. 
-M = 3; 
+M = 4; 
 
 %define reward 
 reward = 100* rand(N,1);

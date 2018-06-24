@@ -19,7 +19,7 @@ function [cvar_opt_set, cvar_opt_value] = ...
         opt_set = zeros(n_tau, M);
        
         %a counter
-         cnt  = 1; 
+        cnt  = 1; 
          
          %define a id vector
          sensor_id = zeros(1, N);

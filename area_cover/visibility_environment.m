@@ -153,46 +153,48 @@ end
 delta = 0.5; 
 
 % the sampling times for approximating CVaR
-n_s = 100;
+n_s = 200;
 
 %store alpha and the associated data
 cvar_gre_value_area_prob = [];
+
+cvar_opt_value_area_pro = [];
 
 
 
 for alpha = 0.01 : 0.09 : 1
 
-% %CVaR measure with the greedy and the optimal
-[cvar_gre_set, cvar_gre_value] = ...
-    CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
+%CVaR + greedy
+[cvar_gre_set, cvar_gre_value, probability_sensor] = ...
+    CVaR_greedy(vis_binary, alpha, delta, n_s);
 
-% % cvar+ opt
-% [cvar_opt_set, cvar_opt_value] = ...
-%     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s); 
+% % % cvar+ opt
+% [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
+%     CVaR_optimal(vis_binary, alpha, delta, n_s); 
 
 
 %cvar + greedy data
-[cvar_gre_area_temp, cvar_gre_p_temp] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
+[cvar_gre_area_temp, cvar_gre_p_temp] = union_area_p(cvar_gre_set, vis_binary, probability_sensor); 
 
 
 cvar_gre_value_area_prob = [cvar_gre_value_area_prob; [alpha, cvar_gre_value, ...
     cvar_gre_area_temp, cvar_gre_p_temp]]; 
 
-
-
 % %expectation + opt
 %  [expt_opt_set, expt_opt_value] = expectation_optimal(vis_binary, pr_sensor, n_s);
-% 
-% 
+%  
 % %expectation + greedy
 % [expt_gre_set, expt_gre_value]  = expectation_greedy(vis_binary, pr_sensor, n_s); 
 
 
 
 % %cvar + opt data
-% [cvar_opt_area_temp, cvar_opt_p_temp] = union_area_p(cvar_opt_set, vis_binary, pr_sensor); 
-% cvar_opt_area = [cvar_opt_area; [alpha, cvar_opt_area_temp]]; 
-% cvar_opt_p = [cvar_opt_p; [alpha, cvar_opt_p_temp]]; 
+% [cvar_opt_area_temp, cvar_opt_p_temp] = union_area_p(cvar_opt_set, vis_binary, probability_sensor); 
+%  
+% 
+% cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
+%     cvar_opt_area_temp, cvar_opt_p_temp]]; 
+
 
 % %expectation + greedy
 % [expt_gre_area_temp, expt_gre_p_temp] = union_area_p(expt_gre_set, vis_binary, pr_sensor); 
@@ -204,26 +206,27 @@ cvar_gre_value_area_prob = [cvar_gre_value_area_prob; [alpha, cvar_gre_value, ..
 % [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
 % expt_opt_area = [expt_opt_area; [alpha, expt_opt_area_temp]]; 
 % expt_opt_p = [expt_opt_p; [alpha, expt_opt_p_temp]]; 
-
-
 end
 
-% %cvar + opt
-% figure (2)
-% plot(cvar_opt_area(:,1), cvar_opt_area(:,2), 'r*'); hold on
+% % %cvar + opt
+% figure (5)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
 % 
-% figure (3)
-% plot(cvar_opt_p(:,1), cvar_opt_p(:,2), 'b'); hold on
+% figure (6)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,3), 'bo'); hold on
+% 
+% figure(7)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
 
 
 %cvar+greedy
-figure (4)
+figure (5)
 plot(cvar_gre_value_area_prob(:,1), cvar_gre_value_area_prob(:,2), 'r*'); hold on
 
-figure (5)
+figure (6)
 plot(cvar_gre_value_area_prob(:,1), cvar_gre_value_area_prob(:,3), 'bo'); hold on
 
-figure(6)
+figure(7)
 plot(cvar_gre_value_area_prob(:,1), cvar_gre_value_area_prob(:,4), 'm+'); hold on
 
 

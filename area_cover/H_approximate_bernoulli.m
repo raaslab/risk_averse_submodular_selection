@@ -30,7 +30,7 @@ function H_appro = H_approximate_bernoulli(set, tau, alpha, vis_binary, pr_senso
             for j = 1 : length(set)
                % find the inx of the sensor gre_set(j)
                % find its binary value
-               bernoulli_j = binornd(1, pr_sensor(j)); 
+               bernoulli_j = binornd(1, pr_sensor(set(j))); 
                
                % union sensor visbility_area together
                % bernoulli_j can be zero and one. 

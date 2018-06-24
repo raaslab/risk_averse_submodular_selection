@@ -150,10 +150,10 @@ end
 %alpha = 0.05; 
 
 % the separation for tau
-delta = 0.5; 
+delta = 0.1; 
 
 % the sampling times for approximating CVaR
-n_s = 200;
+n_s = 1000;
 
 %store alpha and the associated data
 cvar_gre_hvalue_area_prob = [];
@@ -164,18 +164,17 @@ cvar_opt_value_area_pro = [];
 
 for alpha = 0.01 : 0.09 : 1
 
-%CVaR + greedy
-[cvar_gre_set, cvar_gre_value, cvar_gre_uarea, cvar_gre_uprob] = ...
+% CVaR + greedy
+[cvar_gre_set, cvar_gre_hvalue, cvar_gre_uarea, cvar_gre_uprob] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
+
+% Collect the cvar + greedy data 
+cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...
+    cvar_gre_uarea, cvar_gre_uprob]]; 
 
 % % % cvar+ opt
 % [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
 %     CVaR_optimal(vis_binary, alpha, delta, n_s); 
-
-
-
-cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_value, ...
-    cvar_gre_uarea, cvar_gre_uprob]]; 
 
 % %expectation + opt
 %  [expt_opt_set, expt_opt_value] = expectation_optimal(vis_binary, pr_sensor, n_s);
@@ -242,7 +241,6 @@ plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,4), 'm+'); hold
 % figure (9)
 % plot(expt_opt_p(:,1), expt_opt_p(:,2), 'b'); hold on
 % 
-
 
 
 % %Plot the observers

@@ -142,6 +142,8 @@ for i = 1 : N
    
 end   
 
+%%
+
 
 %the upper bound for tau is Visi_region. 
 
@@ -153,7 +155,7 @@ end
 delta = 0.1; 
 
 % the sampling times for approximating CVaR
-n_s = 1000;
+n_s = 1000; 
 
 %store alpha and the associated data
 cvar_gre_hvalue_area_prob = [];
@@ -162,49 +164,30 @@ cvar_opt_value_area_pro = [];
 
 
 
-for alpha = 0.01 : 0.09 : 1
+alpha = 0.2; 
 
 % CVaR + greedy
-[cvar_gre_set, cvar_gre_hvalue, cvar_gre_uarea, cvar_gre_uprob] = ...
+[cvar_gre_set, cvar_gre_hvalue, area_p_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
 
-% Collect the cvar + greedy data 
-cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...
-    cvar_gre_uarea, cvar_gre_uprob]]; 
+figure (2)
+plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+
+% % Collect the cvar + greedy data 
+% cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...
+%     area_p_dis]]; 
+
 
 % % % cvar+ opt
 % [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
 %     CVaR_optimal(vis_binary, alpha, delta, n_s); 
-
-% %expectation + opt
-%  [expt_opt_set, expt_opt_value] = expectation_optimal(vis_binary, pr_sensor, n_s);
-%  
-% %expectation + greedy
-% [expt_gre_set, expt_gre_value]  = expectation_greedy(vis_binary, pr_sensor, n_s); 
-
-
-
-% %cvar + opt data
-% [cvar_opt_area_temp, cvar_opt_p_temp] = union_area_p(cvar_opt_set, vis_binary, probability_sensor); 
-%  
-% 
+ 
 % cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
-%     cvar_opt_area_temp, cvar_opt_p_temp]]; 
+%     cvar_opt_area_temp, cvar_opt_p_temp]];   
 
 
-% %expectation + greedy
-% [expt_gre_area_temp, expt_gre_p_temp] = union_area_p(expt_gre_set, vis_binary, pr_sensor); 
-% expt_gre_area = [expt_gre_area; [alpha, expt_gre_area_temp]]; 
-% expt_gre_p = [expt_gre_p; [alpha, expt_gre_p_temp]]; 
 
-
-% %expectation + optimal
-% [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
-% expt_opt_area = [expt_opt_area; [alpha, expt_opt_area_temp]]; 
-% expt_opt_p = [expt_opt_p; [alpha, expt_opt_p_temp]]; 
-end
-
-% % %cvar + opt
+% cvar + opt
 % figure (5)
 % plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
 % 
@@ -215,32 +198,29 @@ end
 % plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
 
 
-%cvar+greedy
-figure (5)
-plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,2), 'r*'); hold on
-
-figure (6)
-plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,3), 'bo'); hold on
-
-figure(7)
-plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,4), 'm+'); hold on
-
-
-% %expt + opt
+% %cvar+greedy
+% figure (5)
+% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,2), 'r*'); hold on
+% 
 % figure (6)
-% plot(expt_opt_area(:,1), expt_opt_area(:,2), 'r*'); hold on
+% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,3), 'bo'); hold on
 % 
 % figure (7)
-% plot(expt_opt_p(:,1), expt_opt_p(:,2), 'b'); hold on
+% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,4), 'm+'); hold on
+
+% expectation + greedy
+% expt_gre_set_store = []; 
+% for n_s = 1000 : 100: 3000
 % 
-% 
-% %expt+greedy
-% figure (8)
-% plot(expt_opt_area(:,1), expt_opt_area(:,2), 'r*'); hold on
-% 
-% figure (9)
-% plot(expt_opt_p(:,1), expt_opt_p(:,2), 'b'); hold on
-% 
+%  [expt_gre_set, expt_gre_value, expt_gre_uarea, expt_gre_uprob]...
+%      = expectation_greedy(vis_binary, pr_sensor, n_s); 
+%  
+%  expt_gre_set_store = [expt_gre_set_store; expt_gre_set]; 
+% end
+
+
+% %expectation + optimal
+% [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
 
 
 % %Plot the observers

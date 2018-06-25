@@ -1,7 +1,7 @@
 %select the set by using greedy with risk-neutral the expectation
-function [expt_gre_set, expt_gre_value]  = expectation_greedy(vis_binary, pr_sensor, n_s)
-            
-               
+function [expt_gre_set, expt_gre_value,...
+    expt_gre_uarea, expt_gre_uprob]  = expectation_greedy(vis_binary, pr_sensor, n_s)
+                         
         %the upper bound for tau is Visi_region. 
         global N M
          
@@ -53,7 +53,8 @@ function [expt_gre_set, expt_gre_value]  = expectation_greedy(vis_binary, pr_sen
 
         end
         
-               expt_gre_value = expt_last; 
-           
+             expt_gre_value = expt_last; 
+             %calculate disterminstic u_area and u_prob
+             [expt_gre_uarea, expt_gre_uprob] = union_area_p(expt_gre_set, vis_binary, pr_sensor); 
 
 end

@@ -1,7 +1,7 @@
 % maximize the CVaR function
 % calculate the cvar by a greedy approach
 
-function [cvar_gre_set, cvar_gre_value, cvar_gre_uarea, cvar_gre_uprob] = ...
+function [cvar_gre_set, cvar_gre_value, area_p_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s)
    
    %the upper bound for tau is Visi_region. 
@@ -109,7 +109,7 @@ function [cvar_gre_set, cvar_gre_value, cvar_gre_uarea, cvar_gre_uprob] = ...
    % find the associated cvar_gre_value by the greedy approach
    cvar_gre_value = H_value(max_Hstar_inx);
    
-   %calculate disterminstic u_area and u_prob
-   [cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
-    
+%    %calculate disterminstic u_area and u_prob
+%    [cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
+   [area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
 end

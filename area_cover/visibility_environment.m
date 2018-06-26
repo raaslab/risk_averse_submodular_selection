@@ -99,7 +99,7 @@ end
 %we need to select 5 from 8 sensors to turn them on
 global N M 
 N = 10; 
-M = 3; %choose five
+M = 4; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -162,16 +162,19 @@ cvar_gre_hvalue_area_prob = [];
 
 cvar_opt_value_area_pro = [];
 
-
-
-alpha = 0.2; 
+i = 2; 
+for alpha = 0.05 : 0.3 : 1
 
 % CVaR + greedy
 [cvar_gre_set, cvar_gre_hvalue, area_p_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
 
-figure (2)
+figure (i)
 plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+
+i = i +1;
+end
+
 
 % % Collect the cvar + greedy data 
 % cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...

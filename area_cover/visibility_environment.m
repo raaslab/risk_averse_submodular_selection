@@ -98,8 +98,8 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 10; 
-M = 4; %choose five
+N = 15; 
+M = 5; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -142,7 +142,6 @@ for i = 1 : N
    
 end   
 
-%%
 
 
 %the upper bound for tau is Visi_region. 
@@ -154,13 +153,12 @@ end
 % the separation for tau
 delta = 0.1; 
 
+
+%% CVaR + greedy
+
 % the sampling times for approximating CVaR
 n_s = 1000; 
 
-%store alpha and the associated data
-cvar_gre_hvalue_area_prob = [];
-
-cvar_opt_value_area_pro = [];
 
 i = 2; 
 for alpha = 0.05 : 0.3 : 1
@@ -176,29 +174,13 @@ i = i +1;
 end
 
 
+%%store alpha and the associated data
+%cvar_gre_hvalue_area_prob = [];
+
+
 % % Collect the cvar + greedy data 
 % cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...
 %     area_p_dis]]; 
-
-
-% % % cvar+ opt
-% [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
-%     CVaR_optimal(vis_binary, alpha, delta, n_s); 
- 
-% cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
-%     cvar_opt_area_temp, cvar_opt_p_temp]];   
-
-
-
-% cvar + opt
-% figure (5)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
-% 
-% figure (6)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,3), 'bo'); hold on
-% 
-% figure(7)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
 
 
 % %cvar+greedy
@@ -211,7 +193,51 @@ end
 % figure (7)
 % plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,4), 'm+'); hold on
 
-% expectation + greedy
+
+
+ %% *** cvar optimal ***
+ % the sampling times for approximating CVaR
+n_s = 2000; 
+
+
+% i = 2; 
+% for alpha = 0.05 : 0.3 : 1
+alpha = 0.05; 
+% opt + greedy
+[cvar_opt_set, cvar_opt_hvalue, area_p_dis] = ...
+    CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);
+
+figure (2)
+plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+
+% i = i +1;
+% end100
+
+ 
+ 
+% cvar_opt_value_area_pro = [];
+% % % cvar+ opt
+% [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
+%     CVaR_optimal(vis_binary, alpha, delta, n_s); 
+%  
+% cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
+%     cvar_opt_area_temp, cvar_opt_p_temp]];   
+% 
+% %cvar + opt
+% figure (5)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
+% 
+% figure (6)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,3), 'bo'); hold on
+% 
+% figure(7)
+% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
+
+
+
+
+%% ***expectation + greedy***
+n_s = 2000; 
 % expt_gre_set_store = []; 
 % for n_s = 1000 : 100: 3000
 % 
@@ -221,8 +247,16 @@ end
 %  expt_gre_set_store = [expt_gre_set_store; expt_gre_set]; 
 % end
 
+[expt_gre_set, expt_gre_value,...
+    area_p_dis]  = expectation_greedy(vis_binary, pr_sensor, n_s);
 
-% %expectation + optimal
+figure (9)
+
+plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+
+%% ***expectation + optimal***
+
+
 % [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
 
 

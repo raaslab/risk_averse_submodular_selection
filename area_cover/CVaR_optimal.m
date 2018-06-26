@@ -1,5 +1,5 @@
 %calculate the optimal S given tau and calculate the associated H_value
-function [cvar_opt_set, cvar_opt_value] = ...
+function [cvar_opt_set, cvar_opt_value, area_p_dis] = ...
     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s)
 
 
@@ -57,5 +57,8 @@ function [cvar_opt_set, cvar_opt_value] = ...
          max_inx_final = find(H_star == max(H_star), 1);
          cvar_opt_value = H_star(max_inx_final);
          cvar_opt_set = opt_set(max_inx_final, :); 
+         
+         % the area_p distribution of the expt_opt_set
+         [area_p_dis] = area_p_distribution(cvar_opt_set, vis_binary, pr_sensor);         
          
 end

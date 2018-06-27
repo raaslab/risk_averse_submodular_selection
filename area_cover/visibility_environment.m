@@ -164,11 +164,11 @@ i = 2;
 for alpha = 0.05 : 0.3 : 1
 
 % CVaR + greedy
-[cvar_gre_set, cvar_gre_hvalue, area_p_dis] = ...
+[cvar_gre_set, cvar_gre_hvalue, n_sen_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
 
 figure (i)
-plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
 
 i = i +1;
 end
@@ -204,11 +204,11 @@ n_s = 2000;
 % for alpha = 0.05 : 0.3 : 1
 alpha = 0.05; 
 % opt + greedy
-[cvar_opt_set, cvar_opt_hvalue, area_p_dis] = ...
+[cvar_opt_set, cvar_opt_hvalue, n_sen_dis] = ...
     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);
 
 figure (2)
-plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
 
 % i = i +1;
 % end100
@@ -248,11 +248,11 @@ n_s = 2000;
 % end
 
 [expt_gre_set, expt_gre_value,...
-    area_p_dis]  = expectation_greedy(vis_binary, pr_sensor, n_s);
+    n_sen_dis]  = expectation_greedy(vis_binary, pr_sensor, n_s);
 
 figure (9)
 
-plot(area_p_dis(:,1), area_p_dis(:,2), 'r+')  
+plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
 
 %% ***expectation + optimal***
 

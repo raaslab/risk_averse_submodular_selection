@@ -98,7 +98,7 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 15; 
+N = 12; 
 M = 5; %choose five
 observer = []; 
 V = cell(1,N); 
@@ -157,12 +157,12 @@ delta = 0.1;
 %% CVaR + greedy
 
 % the sampling times for approximating CVaR
-n_s = 1000; 
+n_s = 500; 
 
 
-i = 2; 
-for alpha = 0.05 : 0.3 : 1
-
+ i = 2; 
+ for alpha = 0.05 : 0.3 : 1
+%alpha = 0.35; 
 % CVaR + greedy
 [cvar_gre_set, cvar_gre_hvalue, n_sen_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
@@ -170,8 +170,8 @@ for alpha = 0.05 : 0.3 : 1
 figure (i)
 plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
 
-i = i +1;
-end
+ i = i +1;
+ end
 
 
 %%store alpha and the associated data
@@ -197,24 +197,22 @@ end
 
  %% *** cvar optimal ***
  % the sampling times for approximating CVaR
-n_s = 2000; 
+n_s = 500; 
 
 
-% i = 2; 
-% for alpha = 0.05 : 0.3 : 1
-alpha = 0.05; 
+i = 2; 
+for alpha = 0.05 : 0.3 : 1
+%alpha = 0.05; 
 % opt + greedy
 [cvar_opt_set, cvar_opt_hvalue, n_sen_dis] = ...
     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);
 
-figure (2)
+figure (i)
 plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
 
-% i = i +1;
-% end100
+i = i +1;
+end
 
- 
- 
 % cvar_opt_value_area_pro = [];
 % % % cvar+ opt
 % [cvar_opt_set, cvar_opt_value, probability_sensor] = ...

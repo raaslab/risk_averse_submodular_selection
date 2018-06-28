@@ -110,8 +110,8 @@ function [cvar_gre_set, cvar_gre_value, n_sen_dis] = ...
    cvar_gre_value = H_value(max_Hstar_inx);
    
 %    %calculate disterminstic u_area and u_prob
-%    [cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
-%   [area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
+ %   [cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
+ %  [area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
    [n_sen_dis] = nsensor_succ_distribution(cvar_gre_set, pr_sensor);
    
 end

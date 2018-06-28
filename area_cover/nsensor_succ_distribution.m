@@ -4,13 +4,13 @@ function [n_sen_dis] = nsensor_succ_distribution(set, pr_sensor)
           %powerset of set 
           power_set = PowerSet(set);
           
-          n_sen_dis = zeros(length(power_set), 2); 
+          n_sen_dis = zeros(length(set), 2); 
                     
           %how many sensor success 
           for n_sen = 0 : length(set)
               
-              n_sen_dis(n_sen, 1) = n_sen;
-              n_sen_dis(n_sen ,2) = 0; 
+              n_sen_dis(n_sen+1, 1) = n_sen;
+              n_sen_dis(n_sen+1 ,2) = 0; 
               
               for i = 1 : length(power_set)
                   
@@ -45,7 +45,7 @@ function [n_sen_dis] = nsensor_succ_distribution(set, pr_sensor)
                         end
                             
                             
-                      n_sen_dis(n_sen ,2) = n_sen_dis(n_sen ,2) + n_sensor_p_temp;    
+                      n_sen_dis(n_sen+1 ,2) = n_sen_dis(n_sen+1 ,2) + n_sensor_p_temp;    
                   end
                   
               end

@@ -30,6 +30,7 @@ alpha = 0.05;
 delta = 0.1; 
 
 % cvar_greedy_approach
-[cvar_gre_set, cvar_gre_hvalue, cvar_gre_uncertain] = CVaR_greedy(efficiency, alpha, delta, n_s);
+[cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(efficiency, alpha, delta, n_s);
 
 % plot the uncertainty w.r.t. different value of alpha. 
+

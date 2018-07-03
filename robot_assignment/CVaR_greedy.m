@@ -16,7 +16,7 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
     %store the upper bound of H* 
     H_star_value = zeros(n_tau, 1); 
     
-    %store the greedy selected set at each tau, the data is a 1xn_tau cell
+    %store the greedy selected set at each tau, the data is a nx1_tau cell
     H_set = cell(n_tau, 1); 
     
     % a counter 

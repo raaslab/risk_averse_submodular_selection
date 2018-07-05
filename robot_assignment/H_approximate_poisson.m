@@ -1,28 +1,20 @@
 %approximate the h_value of the multi-independent poisson distribution 
-function H_appro = H_approximate_poisson(id, set, tau, efficiency, alpha, n_s)
-
-              % note that set is a taxi set s_i for demand location id 
+function H_appro = H_approximate_poisson(set, pair, tau, robot_demand_sample, alpha, n_s)
+              %note that set is a taxi set s_i for demand location id
               
-              sum_tail_h = 0; 
-
-              for i = 1 : n_s 
-                 
-                 effi_sample = zeros(length(set), 1);    
-                 for j = 1 : length(set)
-                     
-                     %sample from Poisson distribution for each id-set(j)
-                     effi_sample(j) = poissrnd(efficiency(id, set(j))); 
-                     
-                 end
-                 max_effi_sample = max(effi_sample); 
-                 
-                 tail_h  = max(0, tau - max_effi_sample); 
-                 
-                 sum_tail_h = tail_h + sum_tail_h; 
-                  
-              end %sampling ends
+              %note that pair is [i, j] pair each location i and robot j
+              %set is a N*1 cell, contains the assignemnt for each location
+              %i.            
+              % the submodular funcion is f(S,y): = sum_i max_j\in S_i
+              % e_ij.
               
-              H_appro = tau - (1/alpha) * (1/n_s) * sum_tail_h; 
-
+              % update the set 
+              set{pair(1)} = [set{pair(1)}, pair(2)];
+              
+              sum_max_demand = efficiency_distribution(set, robot_demand_sample, n_s);        
+                                                      
+              tail_h = max((tau * ones(1, n_s) - sum_max_demand), zeros(1, n_s)); 
+              
+              H_appro = tau - (1/alpha) * mean(tail_h); 
 
 end

@@ -1,10 +1,11 @@
 % cvar greedy for multi-robot assignment
-function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(efficiency, alpha, delta, n_s)
+function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound] = ...
+    CVaR_greedy(robot_demand_sample, alpha, delta, n_s)
 
     global N R range
     
     % the upper bound for tau
-    tau_bound  = range * N; 
+    tau_bound  = range * R; 
     
     % the number of tau(s)
     n_tau = tau_bound +1; 
@@ -35,9 +36,8 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
         % assigned at most once. 
         gre_selected = [];
         
-        % we need to initialize the previous greedy value for different
-        % locations i at each tau
-        gre_hvalue_last  = kron(ones(N, 1),  tau * (1 - 1/alpha)); 
+        % we need to initialize the previous greedy values
+        gre_hvalue_last  = tau * (1 - 1/alpha); 
         
         %R rounds
          for r  = 1 : R
@@ -45,6 +45,10 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
               %store location i, margin_gain, current_h_value at each round
               %store inx of ij, margin_gain, h_value current at each round
               %of selection
+              % this step we calucalte H(SU{i, j}) - H(S), we would like to 
+              % separate this into N rows, and R - length(gre_selected)
+              % columns
+              
               margin_inx = zeros(N, R - length(gre_selected)); 
               margin_gain = zeros (N, R-  length(gre_selected)); 
               hvalue_current = zeros(N, R - length(gre_selected)); 
@@ -57,8 +61,9 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
                       % first check if taxi j has not been selected
                       if ismember(j, gre_selected) == 0 
 
-                          gre_current_ij = H_approximate_poisson(i, [gre_set{i}, j], tau, efficiency, alpha, n_s); 
-                          margin_hvalue_ij =  gre_current_ij - gre_hvalue_last(i); 
+                          gre_current_ij = H_approximate_poisson(gre_set, [i,j], ...
+                              tau, robot_demand_sample, alpha, n_s); 
+                          margin_hvalue_ij =  gre_current_ij - gre_hvalue_last; 
                       
                           margin_inx(i, cnt_j) = j; 
                           margin_gain(i, cnt_j) = margin_hvalue_ij; 
@@ -86,7 +91,7 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
                gre_selected = [gre_selected, margin_inx(row_inx, col_inx)]; 
               
                %update the  gre_hvalue_last     
-               gre_hvalue_last(row_inx) = hvalue_current(row_inx, col_inx); 
+               gre_hvalue_last = hvalue_current(row_inx, col_inx); 
                             
          end % the end of R round for greedy algorithm    
          
@@ -96,7 +101,7 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
          % store h_values
          %we simplily add all h_values_s_i together
          %*** this step needs further checking!!!***
-         H_value(cnt) = sum(gre_hvalue_last); 
+         H_value(cnt) = gre_hvalue_last; 
          
          %calculate the H* value in the partition case
          H_star_value(cnt) = H_value(cnt) + (1/2)* tau * (1/alpha -1); 
@@ -110,7 +115,9 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
        % we use H_star_values to decide which one to choose 
        % max of the upper bounds
        % we only need the first one
-       max_Hstar_inx = find(H_star_value == max(H_star_value),1); 
+       max_hstar_bound = max(H_star_value); 
+       
+       max_Hstar_inx = find(H_star_value == max_hstar_bound,1); 
    
        % find the associated set we choose, this is a set. 
        cvar_gre_set = H_set{max_Hstar_inx, 1}; 
@@ -120,6 +127,5 @@ function [cvar_gre_set, cvar_gre_hvalue, cvar_gre_mean_uncertain] = CVaR_greedy(
        
        %calculate the uncertainty, we know that the mean and the
        %uncertainty for poisson distribution are the same. 
-        [cvar_gre_mean_uncertain] = efficiency_mean_uncertain(cvar_gre_set, efficiency);
-    
+       [cvar_gre_distribution] = efficiency_distribution(cvar_gre_set, robot_demand_sample, n_s);    
 end

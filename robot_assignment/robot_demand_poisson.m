@@ -12,7 +12,7 @@ function robot_demand_sample = robot_demand_poisson(efficiency, n_s)
         for i = 1 : N            
             for j = 1 : R
                  %robot_demand_sample(:, :, i, j) =  poissrnd(efficiency(i,j), 1, n_s); 
-                  robot_demand_sample(:, :, i, j) =  1.8^efficiency(i,j) * rand(1, n_s);  
+                  robot_demand_sample(:, :, i, j) =  2^efficiency(i,j) * rand(1, n_s);  
             end
 
         end

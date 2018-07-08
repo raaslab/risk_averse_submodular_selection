@@ -1,11 +1,11 @@
 % cvar greedy for multi-robot assignment
 function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound] = ...
-    CVaR_greedy(robot_demand_sample, alpha, delta, n_s, one_demand_bound)
+    CVaR_greedy_sample(efficiency, alpha, delta, n_s)
 
-    global N R 
+    global N R range
     
     % the upper bound for tau
-    tau_bound  = N * one_demand_bound; 
+    tau_bound  = N * range; 
     
     % the number of tau(s)
     n_tau = tau_bound/delta + 1; 
@@ -59,8 +59,8 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound]
                   for  j  = 1 : R  
                       % first check if taxi j has not been selected
                       if ismember(j, gre_selected) == 0 
-                          gre_current_ij = H_approximate_poisson(gre_set, [i,j], ...
-                              tau, robot_demand_sample, alpha, n_s); 
+                          gre_current_ij = H_approximate_poisson_sample(gre_set, [i,j], ...
+                              tau, efficiency, alpha, n_s); 
                           margin_hvalue_ij =  gre_current_ij - gre_hvalue_last; 
                       
                           margin_inx(i, cnt_j) = j; 
@@ -125,6 +125,6 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound]
        
        %calculate the uncertainty, we know that the mean and the
        %uncertainty for poisson distribution are the same. 
-       [cvar_gre_distribution] = efficiency_distribution(cvar_gre_set, robot_demand_sample, n_s);
-       %[~, cvar_gre_distribution] = efficiency_distribution_samp(cvar_gre_set, efficiency, tau, n_s);
+       %[cvar_gre_distribution] = efficiency_distribution(cvar_gre_set, efficiency, n_s);
+       [~, cvar_gre_distribution] = efficiency_distribution_samp(cvar_gre_set, efficiency, tau, n_s);
 end

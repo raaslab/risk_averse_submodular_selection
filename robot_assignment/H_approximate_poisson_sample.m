@@ -12,6 +12,6 @@ function H_appro = H_approximate_poisson_sample(set, pair, tau, efficiency, alph
               
               [tail_samples, ~] = efficiency_distribution_samp(set, efficiency, tau, n_s);
               
-              H_appro = tau - (1/alpha) * (1/n_s)* sum(tail_samples);
+              H_appro = tau - (1/alpha) * (1/n_s) * sum(tail_samples);
               
 end

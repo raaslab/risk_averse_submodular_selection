@@ -13,7 +13,8 @@ function  [tail_samples, sum_edem_ns] = efficiency_distribution_samp(set, effici
                       if isempty(set{i}) == 0
                          % search for all the robot j for demand i
                           for j = 1 : length(set{i})                              
-                              max_edem_ns(i) = max(max_edem_ns(i), poissrnd(efficiency(i, set{i}(j)))); 
+                              max_edem_ns(i) = max(max_edem_ns(i), poissrnd(efficiency(i, set{i}(j))));
+                              %max_edem_ns(i) = max(max_edem_ns(i), 2^efficiency(i, set{i}(j)))*rand(1);
                           end
                           
                       else 

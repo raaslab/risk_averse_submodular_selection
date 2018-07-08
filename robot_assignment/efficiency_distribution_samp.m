@@ -1,7 +1,6 @@
 % calculate the mean and the uncertainty after obtainting the set 
 function  [tail_samples, sum_edem_ns] = efficiency_distribution_samp(set, efficiency, tau, n_s)
-                        
-
+     
               sum_edem_ns = zeros(1, n_s);              
               tail_samples = zeros(1, n_s); 
                
@@ -22,8 +21,8 @@ function  [tail_samples, sum_edem_ns] = efficiency_distribution_samp(set, effici
                       end                      
                       
                   end
-                  sum_edem_ns(i) = sum(max_edem_ns);                   
-                  tail_samples(i) = max(tau - sum_edem_ns(i), 0);                 
+                  sum_edem_ns(k) = sum(max_edem_ns);                   
+                  tail_samples(k) = max(tau - sum_edem_ns(i), 0);                 
                                                      
               end %n_s sample end.  
           

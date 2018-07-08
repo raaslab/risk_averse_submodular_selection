@@ -25,7 +25,7 @@ n_s = 500;
 %%
 
 %the separation for tau
-delta = 1;
+delta = 0.1;
 
 %user-defined confidence level
 %note that this guy can be cahnged later

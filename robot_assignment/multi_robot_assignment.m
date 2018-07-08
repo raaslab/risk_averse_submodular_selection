@@ -45,7 +45,7 @@ for alpha = 0.05 : 0.3 : 1
 
 % cvar_greedy_approach, using individual samples
 [cvar_gre_set, cvar_gre_dis, cvar_gre_hvalue, max_hstar_bound] = ...
-    CVaR_greedy_sample(efficiency, alpha, delta, n_s);
+    CVaR_greedy_edem(efficiency, alpha, delta, n_s);
 
 cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
 cvar_gre_hb_store(cnt_alpha, :) = [alpha, max_hstar_bound]; 

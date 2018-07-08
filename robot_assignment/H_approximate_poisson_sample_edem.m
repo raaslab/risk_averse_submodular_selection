@@ -19,7 +19,7 @@ function H_appro = H_approximate_poisson_sample_edem(set, pair, tau, efficiency,
                       max_edem_ns = max(max_edem_ns, poissrnd(efficiency(pair(1), set{pair(1)}(j))));       
                   end
                   max_edem(k) = max_edem_ns; 
-                  tail_edem(k) = max(tau-max_edem(k), 0); 
+                  tail_edem(k) = max(tau - max_edem(k), 0); 
               end
               
                   

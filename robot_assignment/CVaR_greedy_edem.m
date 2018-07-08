@@ -5,7 +5,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound]
     global N R range
     
     % the upper bound for tau
-    tau_bound  = N * range; 
+    tau_bound  = range; 
     
     % the number of tau(s)
     n_tau = tau_bound/delta + 1; 
@@ -125,5 +125,5 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, max_hstar_bound]
        
        %calculate the uncertainty, we know that the mean and the
        %uncertainty for poisson distribution are the same. 
-       [cvar_gre_distribution] = efficiency_distribution_samp(cvar_gre_set, efficiency, n_s);    
+       [~, cvar_gre_distribution] = efficiency_distribution_samp(cvar_gre_set, efficiency, tau, n_s);    
 end

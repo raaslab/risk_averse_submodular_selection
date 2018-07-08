@@ -19,13 +19,13 @@ for i = 1 : N
     end
 end
 %sampling time 
-n_s = 500; 
+n_s = 100; 
 % robot_demand_sample = robot_demand_poisson(efficiency, n_s); 
 % one_demand_bound = round(max(robot_demand_sample(:))); 
 %%
 
 %the separation for tau
-delta = 0.1;
+delta = 1;
 
 %user-defined confidence level
 %note that this guy can be cahnged later

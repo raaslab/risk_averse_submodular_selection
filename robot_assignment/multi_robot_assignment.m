@@ -19,13 +19,13 @@ for i = 1 : N
     end
 end
 %sampling time 
-n_s = 100; 
+n_s = 500; 
 % robot_demand_sample = robot_demand_poisson(efficiency, n_s); 
 % one_demand_bound = round(max(robot_demand_sample(:))); 
 %%
 
 %the separation for tau
-delta = 1;
+delta = 0.1;
 
 %user-defined confidence level
 %note that this guy can be cahnged later
@@ -58,7 +58,8 @@ end
 %hvalue and its bound plot
 figure (1)
 plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on 
-plot(cvar_gre_hb_store(:,1), cvar_gre_hb_store(:,2), 'bo')
+plot(cvar_gre_hb_store(:,1), cvar_gre_hb_store(:,2), 'bo'), hold on
+
 %distribution plot
 figure (2)
 nhist(cvar_gre_dis_store, 'legend', {'alpha=0.05', 'alpha=0.35', 'alpha=0.65', 'alpha=0.95'})

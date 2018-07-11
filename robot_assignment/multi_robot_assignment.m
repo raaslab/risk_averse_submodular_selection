@@ -2,7 +2,7 @@
 global N R 
 
 % the number of demands
-N = 3; 
+N = 5; 
 
 % the number of robots 
 R = 7; 
@@ -26,15 +26,15 @@ R = 7;
 %%%%
 % 
 efficiency = zeros(N, R); 
-range = 10;
+
 for i = 1 : N
     for j = 1 : R
-        efficiency(i, j) = range * rand(1); 
+        efficiency(i, j) = 15 * rand(1) +  15*(i-1); 
     end
 end
 
 %sampling times
-n_s = 10000; 
+n_s = 1000; 
 
 robot_demand_sample = robot_demand_poisson(efficiency, n_s); 
 one_demand_bound = round(max(robot_demand_sample(:)));
@@ -72,7 +72,7 @@ cvar_gre_hb_store ={};
 
 cnt_alpha = 1; 
 
-for alpha = 0.01 : 0.02 : 0.1
+for alpha = 0.01 : 0.2 : 1
 % cvar_greedy_approach, using compact vector for samples
 [cvar_gre_set, cvar_gre_dis, cvar_gre_hvalue, tau_hvalue, H_star_value, H_set, max_hstar_bound] = ...
     CVaR_greedy_matching(robot_demand_sample, alpha, delta, n_s, one_demand_bound);

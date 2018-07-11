@@ -1,14 +1,15 @@
 % cvar greedy for multi-robot assignment
-function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_set, ...
-    max_hstar_bound] = CVaR_greedy(robot_demand_sample, alpha, delta, n_s, one_demand_bound)
+function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_star_value, H_set, ...
+    max_hstar_bound] = CVaR_greedy_matching(robot_demand_sample, alpha, delta, ...
+    n_s, one_demand_bound)
 
-    global N R 
+    global N R
     
     % the upper bound for tau
     tau_bound  = N * one_demand_bound; 
     
     % the number of tau(s)
-    n_tau = tau_bound/delta + 1; 
+    n_tau = tau_bound/delta; 
     
     %store the H value
     H_value = zeros(n_tau, 1);
@@ -23,13 +24,16 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_se
     
     % a counter 
     cnt = 1;
-    for tau = 0 : delta : tau_bound       
+    for tau = delta : delta : tau_bound       
         % since we need to assign a set of sensors S_i to each demand
         % location i. we need to keep each S_i separately. 
          
         %/*** Greedy Algorithm ***/ 
         % create gre_set to store S_i (s) at each tau 
         gre_set = cell(N, 1);
+%         for k = 1 : N
+%             gre_set{k} =k;
+%         end
         % since we will assign all the taxis, the greedy algorithm has 
         % this also indicates the previous set
         
@@ -108,7 +112,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_se
          tau_hvalue(cnt, :) = [tau, gre_hvalue_last]; 
          
          %calculate the H* value in the partition case
-         H_star_value(cnt) = H_value(cnt) + (1/2)* tau * (1/alpha -1);  
+         H_star_value(cnt) = H_value(cnt); %+ (1/2)* tau * (1/alpha -1);  
                 
          cnt = cnt + 1;     
     end

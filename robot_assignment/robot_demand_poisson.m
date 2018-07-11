@@ -7,12 +7,16 @@ function robot_demand_sample = robot_demand_poisson(efficiency, n_s)
     
     global N R 
     
+    range = max(max(efficiency));
+    
     robot_demand_sample = zeros(1, n_s, N, R); 
                
         for i = 1 : N            
             for j = 1 : R
-                 %robot_demand_sample(:, :, i, j) =  poissrnd(efficiency(i,j), 1, n_s); 
-                  robot_demand_sample(:, :, i, j) =  2^efficiency(i,j) * rand(1, n_s);  
+%                 robot_demand_sample(:, :, i, j) =  poissrnd(2^efficiency(i,j), 1, n_s); 
+                    robot_demand_sample(:, :, i, j) =(2 * efficiency(i,j)^3.5/range) .* rand(1, n_s) + ...
+                        (efficiency(i,j) - efficiency(i,j)^3.5/range);  
+%                 robot_demand_sample(:, :, i, j) =  2^efficiency(i,j) * ones(1, n_s);
             end
 
         end

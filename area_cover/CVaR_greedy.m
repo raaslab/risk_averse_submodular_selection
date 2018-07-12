@@ -1,7 +1,7 @@
 % maximize the CVaR function
 % calculate the cvar by a greedy approach
 
-function [cvar_gre_set, cvar_gre_value, n_sen_dis] = ...
+function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s)
    
    %the upper bound for tau is Visi_region. 
@@ -87,12 +87,11 @@ function [cvar_gre_set, cvar_gre_value, n_sen_dis] = ...
         
         %store set in the second to end
         H_set(cnt, :) = gre_set;
-        
-        
+         
         %after we have the H_value, we can decide which one to choose by
         % 1-1/e for the uniform matroid
         % for each tau we have an upper bound for each H_star_values. (H(s*, iDelta))
-        H_star_value(cnt) = H_value(cnt) + (1/exp(1))* tau * (1/alpha -1); 
+        H_star_value(cnt) = H_value(cnt); %+ (1/exp(1))* tau * (1/alpha -1); 
         
         %counter plus 1
         cnt = cnt +1;      
@@ -109,9 +108,10 @@ function [cvar_gre_set, cvar_gre_value, n_sen_dis] = ...
    % find the associated cvar_gre_value by the greedy approach
    cvar_gre_value = H_value(max_Hstar_inx);
    
-%    %calculate disterminstic u_area and u_prob
- %   [cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
- %  [area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
-   [n_sen_dis] = nsensor_succ_distribution(cvar_gre_set, pr_sensor);
-   
+   %calculate disterminstic u_area and u_prob
+   %[cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 
+   %[area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
+ 
+   %let's plot the distribution of the union area
+   [uarea_dis,~] = uarea_distribution(cvar_gre_set, tau, vis_binary, pr_sensor, n_s);
 end

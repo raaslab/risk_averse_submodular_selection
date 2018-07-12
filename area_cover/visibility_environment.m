@@ -98,34 +98,31 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 10; 
-M = 5; %choose five
+N = 6; 
+M = 3; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
 vis_area = zeros(1,N);
 pr_sensor = zeros(1,N); 
 
+% Randomly generate 8 available obaservaers within [0 8.85]*[0  8.85]
+while length(observer)< N
+     ran_x = 9 * rand(1); 
+     ran_y = 9 * rand(1); 
+     if ~in_environment( [ran_x ran_y] , environment , epsilon )    
+     else
+      observer = [observer; ran_x ran_y]; 
+     end
+end
 
-% % Randomly generate 8 available obaservaers within [0 8.85]*[0  8.85]
-% while length(observer)< N
-%      ran_x = 9 * rand(1); 
-%      ran_y = 9 * rand(1); 
-%      if ~in_environment( [ran_x ran_y] , environment , epsilon )    
-%      else
-%       observer = [observer; ran_x ran_y]; 
-%      end
-% end
-
-
-
-% manually select some good coordinates for the observers to make sure less
-% redundant overlapping.
-observer = [0.275 6.7; 1.40 5.05; 5.2 7.3; 4.96 5.25; 7.3 0.18; ...
-5.0 2.5; 7.368 6.554; 7.534 8.74; 1.5 2.3; 3 5.37];
-
-[~,idx] = sort(observer(:,1)); % sort just the first column
-observer = observer(idx,:);   % sort the whole matrix using the sort indices
+% % manually select some good coordinates for the observers to make sure less
+% % redundant overlapping.
+% observer = [0.275 6.7; 1.40 5.05; 5.2 7.3; 4.96 5.25; 7.3 0.18; ...
+% 5.0 2.5; 7.368 6.554; 7.534 8.74; 1.5 2.3; 3 5.37];
+% 
+% [~,idx] = sort(observer(:,1)); % sort just the first column
+% observer = observer(idx,:);   % sort the whole matrix using the sort indices
 
 
 for i = 1 : N
@@ -152,7 +149,6 @@ for i = 1 : N
    
 end   
 
-
 %the upper bound for tau is Visi_region. 
 
 % set an alpha alpha \in (0, 1] user defined probability threshold.
@@ -167,52 +163,48 @@ delta = 0.1;
 % the sampling times for approximating CVaR
 n_s = 500; 
 
+cvar_gre_h_store = [];
+cvar_gre_uadis_store ={};
 
- i = 2; 
- for alpha = 0.05 : 0.3 : 1
+cnt_alpha = 1; 
+
+
+ for alpha = 0.01 : 0.3 : 1
 %alpha = 0.35; 
 % CVaR + greedy
-[cvar_gre_set, cvar_gre_hvalue, n_sen_dis] = ...
+[cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
     CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
 
-figure (i)
-plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
+cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
+cvar_gre_uadis_store{cnt_alpha} = uarea_dis;
 
- i = i +1;
+cnt_alpha = cnt_alpha + 1; 
  end
 
+%hvalue and its bound plot
+figure (1)
+plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on 
+%plot(cvar_gre_hbmax_store(:,1), cvar_gre_hbmax_store(:,2), 'bo'), hold on
 
-%%store alpha and the associated data
-%cvar_gre_hvalue_area_prob = [];
-
-% % Collect the cvar + greedy data 
-% cvar_gre_hvalue_area_prob = [cvar_gre_hvalue_area_prob; [alpha, cvar_gre_hvalue, ...
-%     area_p_dis]]; 
-
-% %cvar+greedy
-% figure (5)
-% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,2), 'r*'); hold on
-% 
-% figure (6)
-% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,3), 'bo'); hold on
-% 
-% figure (7)
-% plot(cvar_gre_hvalue_area_prob(:,1), cvar_gre_hvalue_area_prob(:,4), 'm+'); hold on
+%distribution plot
+figure (2)
+nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.01', 'alpha=0.31', 'alpha=0.61', 'alpha=0.91'})
+% %expectation plot
+% figure (3)
+% %real case illustration
+% figure (4)
 
  %% *** cvar optimal ***
  % the sampling times for approximating CVaR
-n_s = 500; 
+n_s = 50; 
 
 
 i = 2; 
 for alpha = 0.05 : 0.3 : 1
 %alpha = 0.05; 
 % opt + greedy
-[cvar_opt_set, cvar_opt_hvalue, n_sen_dis] = ...
-    CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);
-
-figure (i)
-plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
+[cvar_opt_set, cvar_opt_hvalue, uarea_dis] = ...
+    CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);  
 
 i = i +1;
 end

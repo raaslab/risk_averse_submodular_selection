@@ -2,13 +2,16 @@
 % calculate the cvar by a greedy approach
 
 function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
-    CVaR_greedy(vis_binary, alpha, delta, sensor_success_sample, n_s)
+    CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s)
    
    %the upper bound for tau is Visi_region. 
    global N M All_visi
    
    % the upper bound for \tau should be the area of all visibile region. 
    tau_bound = round(All_visi)+1; 
+   
+   %%when use sum
+   %tau_bound = N * round(max(vis_area(:)));
   
    % the number of tau(s), tau_bound/delta+1, for each tau, we calculate
    % the greedily selected set and the cvar 
@@ -114,4 +117,5 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
  
    %let's plot the distribution of the union area
    uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
+   %uarea_distribution_sum(set, vis_area, sensor_success_sample)
 end

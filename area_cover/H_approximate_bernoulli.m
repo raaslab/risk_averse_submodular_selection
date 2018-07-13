@@ -11,6 +11,8 @@ function H_appro = H_approximate_bernoulli(set, tau, alpha, vis_binary, sensor_s
         % sum of max(0, tau-f(s,y)) to calculate the expection 
         
         uarea = uarea_distribution(set, vis_binary, sensor_success_sample, n_s);
+        %%use sum directly
+        %uarea_distribution_sum(set, vis_area, sensor_success_sample, n_s)
         
         tail_h = max(tau * ones(1, n_s) - uarea, zeros(1, n_s)); 
         

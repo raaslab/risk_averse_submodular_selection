@@ -174,7 +174,7 @@ cnt_alpha = 1;
 %alpha = 0.35; 
 % CVaR + greedy
 [cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
-    CVaR_greedy(vis_binary, alpha, delta, sensor_success_sample, n_s);
+    CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s);
 
 cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
 cvar_gre_uadis_store{cnt_alpha} = uarea_dis;

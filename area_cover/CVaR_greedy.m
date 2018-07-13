@@ -2,7 +2,7 @@
 % calculate the cvar by a greedy approach
 
 function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
-    CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s)
+    CVaR_greedy(vis_binary, alpha, delta, sensor_success_sample, n_s)
    
    %the upper bound for tau is Visi_region. 
    global N M All_visi
@@ -52,7 +52,7 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
                     
                     
                    H_current_j = H_approximate_bernoulli([gre_set, j],...
-                       tau, alpha, vis_binary, pr_sensor, n_s);
+                       tau, alpha, vis_binary, sensor_success_sample, n_s);
 
                    margin_gain_j =  H_current_j - H_last; 
 
@@ -113,5 +113,5 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
    %[area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
  
    %let's plot the distribution of the union area
-   [uarea_dis,~] = uarea_distribution(cvar_gre_set, tau, vis_binary, pr_sensor, n_s);
+   uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
 end

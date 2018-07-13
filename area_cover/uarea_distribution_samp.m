@@ -1,8 +1,9 @@
-function uarea = uarea_distribution(set, vis_binary, sensor_success_sample, n_s)
+function [area_ns, tail_area] = uarea_distribution_samp(set, tau, vis_binary, pr_sensor, n_s)
 
         global poly_large
 
-        uarea = zeros(1, n_s);
+        area_ns = zeros(1, n_s);
+        tail_area = zeros(1, n_s);
         
         
         for i = 1 : n_s
@@ -14,18 +15,24 @@ function uarea = uarea_distribution(set, vis_binary, sensor_success_sample, n_s)
             union_binary = zeros(9*poly_large, 9*poly_large); 
             
             for j = 1 : length(set)
-
+               % find the inx of the sensor gre_set(j)
+               % find its binary value
+               bernoulli_j = binornd(1, pr_sensor(set(j))); 
+               
+               % union sensor visbility_area together
                % bernoulli_j can be zero and one. 
-               union_binary =  (union_binary) | (sensor_success_sample(set(j), i)...
-                   * vis_binary{1, set(j)}); 
+               union_binary =  (union_binary) | (bernoulli_j * vis_binary{1, set(j)}); 
                
             end
             
             % after the union, calculate the area
             % keep in mind that we enlarge the popygon 100 times. we need
             % to divide by 10000 for the origina area. 
-            uarea(i) = bwarea(union_binary)/(poly_large^2);
-                                                                
+            area_ns(i) = bwarea(union_binary)/(poly_large^2);
+                       
+            % we need max{0, tau-f(s,y)}
+            tail_area(i) = max(0, tau - area_ns(i));
+                                          
         end
 
 end

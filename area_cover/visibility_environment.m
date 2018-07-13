@@ -70,7 +70,6 @@ sum_envi_area = sum(envi_area);
 All_visi = 9*9-sum_envi_area; 
 
 
-
 %Calculate a good plot window (bounding box) based on outer polygon of environment
 environment_min_x = min(environment{1}(:,1));
 environment_max_x = max(environment{1}(:,1));
@@ -98,8 +97,8 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 6; 
-M = 3; %choose five
+N = 8; 
+M = 4; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -110,7 +109,7 @@ pr_sensor = zeros(1,N);
 while length(observer)< N
      ran_x = 9 * rand(1); 
      ran_y = 9 * rand(1); 
-     if ~in_environment( [ran_x ran_y] , environment , epsilon )    
+     if ~in_environment([ran_x ran_y] , environment , epsilon)    
      else
       observer = [observer; ran_x ran_y]; 
      end
@@ -121,8 +120,9 @@ end
 % observer = [0.275 6.7; 1.40 5.05; 5.2 7.3; 4.96 5.25; 7.3 0.18; ...
 % 5.0 2.5; 7.368 6.554; 7.534 8.74; 1.5 2.3; 3 5.37];
 % 
-% [~,idx] = sort(observer(:,1)); % sort just the first column
-% observer = observer(idx,:);   % sort the whole matrix using the sort indices
+
+[~,idx] = sort(observer(:,1)); % sort just the first column
+observer = observer(idx,:);   % sort the whole matrix using the sort indices
 
 
 for i = 1 : N
@@ -145,12 +145,15 @@ for i = 1 : N
     % each sensor successful turn on rate, the more the sensor can see the
     % larger it will fail. pr_sensor is the survival rate.
     pr_sensor(1, i ) = 1- vis_area(1, i)/(All_visi/2); 
-    
-   
-end   
+end
+
+% the sampling times for approximating CVaR
+n_s = 500; 
+
+%generate the binary data before hand.
+sensor_success_sample = sensor_success_bernoulli(pr_sensor, n_s);
 
 %the upper bound for tau is Visi_region. 
-
 % set an alpha alpha \in (0, 1] user defined probability threshold.
 % alpha can chosen
 %alpha = 0.05; 
@@ -160,8 +163,6 @@ delta = 0.1;
  
 %% CVaR + greedy
 
-% the sampling times for approximating CVaR
-n_s = 500; 
 
 cvar_gre_h_store = [];
 cvar_gre_uadis_store ={};
@@ -173,7 +174,7 @@ cnt_alpha = 1;
 %alpha = 0.35; 
 % CVaR + greedy
 [cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
-    CVaR_greedy(vis_binary, alpha, delta, pr_sensor, n_s);
+    CVaR_greedy(vis_binary, alpha, delta, sensor_success_sample, n_s);
 
 cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
 cvar_gre_uadis_store{cnt_alpha} = uarea_dis;

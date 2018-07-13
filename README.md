@@ -2,11 +2,11 @@
 
 1, area_cover folder contains risk-averse covering 
 
-    four files are actually needed
-    
-    main_file: visibility_environment()
-    
-    subfiles: CVaR_greedy(), H_approximate_bernoulli() and union_area_p().
+    main_file: "visibility_environment"
+    subfiles: "CVaR_greedy": Successive Greedy Algorithm
+              "H_approximate_bernoulli": calculate the hvalue H(S, tau).
+              "uara_distribution": return the distribution of f(S): = union of the visi_region by gre_set
+              "sensor_success_bernoulli": retun 2D matrix, (N, n_s) for each sensor i \in {1, ..., N}. 
     
 2, multi-robot assignment folder
     

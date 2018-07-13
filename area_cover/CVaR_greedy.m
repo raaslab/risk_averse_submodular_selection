@@ -55,7 +55,7 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
                     
                     
                    H_current_j = H_approximate_bernoulli([gre_set, j],...
-                       tau, alpha, vis_binary, sensor_success_sample, n_s);
+                       tau, alpha, vis_area, vis_binary, sensor_success_sample, n_s);
 
                    margin_gain_j =  H_current_j - H_last; 
 
@@ -94,7 +94,7 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
         %after we have the H_value, we can decide which one to choose by
         % 1-1/e for the uniform matroid
         % for each tau we have an upper bound for each H_star_values. (H(s*, iDelta))
-        H_star_value(cnt) = H_value(cnt); %+ (1/exp(1))* tau * (1/alpha -1); 
+        H_star_value(cnt) = H_value(cnt) + (1/exp(1))* tau * (1/alpha -1); 
         
         %counter plus 1
         cnt = cnt +1;      
@@ -117,5 +117,5 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
  
    %let's plot the distribution of the union area
    uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
-   %uarea_distribution_sum(set, vis_area, sensor_success_sample)
+   %uarea_dis = uarea_distribution_sum(cvar_gre_set, vis_area, sensor_success_sample, n_s);
 end

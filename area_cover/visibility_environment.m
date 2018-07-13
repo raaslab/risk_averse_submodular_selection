@@ -97,8 +97,8 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 8; 
-M = 4; %choose five
+N = 5; 
+M = 3; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -148,7 +148,7 @@ for i = 1 : N
 end
 
 % the sampling times for approximating CVaR
-n_s = 500; 
+n_s = 1000; 
 
 %generate the binary data before hand.
 sensor_success_sample = sensor_success_bernoulli(pr_sensor, n_s);
@@ -170,17 +170,17 @@ cvar_gre_uadis_store ={};
 cnt_alpha = 1; 
 
 
- for alpha = 0.01 : 0.3 : 1
-%alpha = 0.35; 
-% CVaR + greedy
-[cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
-    CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s);
+for alpha = 0.001 : 0.3 : 1
+    %alpha = 0.35; 
+    % CVaR + greedy
+    [cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
+        CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s);
 
-cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
-cvar_gre_uadis_store{cnt_alpha} = uarea_dis;
+    cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
+    cvar_gre_uadis_store{cnt_alpha} = uarea_dis;
 
-cnt_alpha = cnt_alpha + 1; 
- end
+    cnt_alpha = cnt_alpha + 1; 
+end
 
 %hvalue and its bound plot
 figure (1)
@@ -189,7 +189,7 @@ plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on
 
 %distribution plot
 figure (2)
-nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.01', 'alpha=0.31', 'alpha=0.61', 'alpha=0.91'})
+nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.01', 'alpha=0.31', 'alpha=0.61', 'alpha=0.91'}), hold on
 % %expectation plot
 % figure (3)
 % %real case illustration
@@ -201,7 +201,7 @@ n_s = 50;
 
 
 i = 2; 
-for alpha = 0.05 : 0.3 : 1
+for alpha = 0.01 : 0.3 : 1
 %alpha = 0.05; 
 % opt + greedy
 [cvar_opt_set, cvar_opt_hvalue, uarea_dis] = ...

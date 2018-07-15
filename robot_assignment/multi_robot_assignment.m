@@ -72,7 +72,9 @@ cvar_gre_hb_store ={};
 
 
 %alpha_store = [0.001, 0.01, 0.03, 0.05, 0.08, 0.1, 0.2, 0.3, 0.4 0.5, 0.6, 0.7, 0.8,  0.9, 1]; 
-alpha_store = [0.001,1];
+%alpha_store = [0.01, 0.1, 0.3, 0.6, 0.9]; 
+%alpha_store = [0.001,1];
+
 for i = 1 : length(alpha_store)
 % cvar_greedy_approach, using compact vector for samples
 alpha = alpha_store(i); 

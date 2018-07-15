@@ -57,7 +57,7 @@ envi_area = zeros(1,9);
 global All_visi poly_large
 
 %how many times we enlarge the polygon
-poly_large = 10; 
+poly_large = 100; 
 
 for i = 1 : 9 
     %calculate the binary of the environment, 100 times  
@@ -97,8 +97,8 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 10; 
-M = 5; %choose five
+N = 8; 
+M = 4; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -159,42 +159,111 @@ sensor_success_sample = sensor_success_bernoulli(pr_sensor, n_s);
 %alpha = 0.05; 
 
 % the separation for tau
-delta = 0.1; 
+delta = 1; 
  
 %% CVaR + greedy
 
 
 cvar_gre_h_store = [];
 cvar_gre_uadis_store ={};
+cvar_gre_tauh_store ={}; 
+cvar_gre_set_store = {}; 
 
-cnt_alpha = 1; 
-
-
-for alpha = 0.01 : 0.3 : 1
+%alpha_store = [0.001, 0.01, 0.03, 0.05, 0.08, 0.1, 0.2, 0.3, 0.4 0.5, 0.6, 0.7, 0.8,  0.9, 1]; 
+%alpha_store = [0.01, 0.1, 0.3, 0.6, 0.9]; 
+alpha_store = [0.001,1]; 
+for i = 1 : length(alpha_store)
+    alpha = alpha_store(i); 
     %alpha = 0.35; 
     % CVaR + greedy
-    [cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
+    [cvar_gre_set, cvar_gre_hvalue, tau_hvalue, uarea_dis] = ...
         CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s);
 
-    cvar_gre_h_store(cnt_alpha, :) = [alpha, cvar_gre_hvalue];
-    cvar_gre_uadis_store{cnt_alpha} = uarea_dis;
+    cvar_gre_h_store(i, :) = [alpha, cvar_gre_hvalue];
+    cvar_gre_uadis_store{i} = uarea_dis;
+    cvar_gre_set_store{i} = cvar_gre_set; 
+    cvar_gre_tauh_store{i} = tau_hvalue; 
 
-    cnt_alpha = cnt_alpha + 1; 
 end
 
-% %hvalue and its bound plot
-% figure (1)
-% plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on
-% %plot(cvar_gre_hbmax_store(:,1), cvar_gre_hbmax_store(:,2), 'bo'), hold on
+%  % %hvalue and its bound plot
+%  figure (2)
+%  plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on
+% % %plot(cvar_gre_hbmax_store(:,1), cvar_gre_hbmax_store(:,2), 'bo'), hold on
 
 %distribution plot
-figure (2)
-nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.01', 'alpha=0.31', 'alpha=0.61', 'alpha=0.91'}), hold on
-% %expectation plot
-% figure (3)
-% %real case illustration
-% figure (4)
+figure (3)
+nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.001', 'alpha=1'}), hold on
 
+
+% figure (4)
+% for i = 1 : length(alpha_store)
+%     plot(cvar_gre_tauh_store{i}(:,1), cvar_gre_tauh_store{i}(:,2)), hold on
+% end
+%%
+figure(5), clf; set(gcf,'position',[200 500 700 600]); hold on;
+axis equal; axis off; axis([X_MIN X_MAX Y_MIN Y_MAX]);
+
+
+%Plot Environment
+patch( environment{1}(:,1) , environment{1}(:,2) , 0.1*ones(1,length(environment{1}(:,1)) ) , ...
+       'w' , 'linewidth' , 1.0 );
+for i = 2 : size(environment,2)
+    patch( environment{i}(:,1) , environment{i}(:,2) , 0.1*ones(1,length(environment{i}(:,1)) ) , ...
+           'k' , 'EdgeColor' , [0.7 0.7 0.7] , 'FaceColor' , [0.7 0.7 0.7] , 'linewidth' , 1.5 );
+end
+
+for i = 1 : N
+    %Plot the observers
+    %if i ~= 1 &&  i  ~= 2
+    plot3( observer(i,1) , observer(i,2) , 0.3 , ...
+           'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'k' );  
+end
+
+%Plot the observers
+gre_set_extreme = cvar_gre_set_store{1};
+for i = 1 : length(gre_set_extreme)
+plot3( observer(gre_set_extreme(i),1) , observer(gre_set_extreme(i),2) , 0.3 , ...
+           'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'r' );  
+
+patch( V{gre_set_extreme(i)}(:,1) , V{gre_set_extreme(i)}(:,2) ,...
+    0.1*ones( size(V{gre_set_extreme(i)},1) , 1 ) , ...
+        'w',   'EdgeColor' , 'None',   'FaceColor' , [0.9, 0.5, 0.44] , 'linewidth' , 1.0 ); 
+
+end
+
+
+
+figure(6), clf; set(gcf,'position',[200 500 700 600]); hold on;
+axis equal; axis off; axis([X_MIN X_MAX Y_MIN Y_MAX]);
+
+
+%Plot Environment
+patch( environment{1}(:,1) , environment{1}(:,2) , 0.1*ones(1,length(environment{1}(:,1)) ) , ...
+       'w' , 'linewidth' , 1.0 );
+for i = 2 : size(environment,2)
+    patch( environment{i}(:,1) , environment{i}(:,2) , 0.1*ones(1,length(environment{i}(:,1)) ) , ...
+           'k' , 'EdgeColor' , [0.7 0.7 0.7] , 'FaceColor' , [0.7 0.7 0.7] , 'linewidth' , 1.5 );
+end
+
+for i = 1 : N
+    %Plot the observers
+    %if i ~= 1 &&  i  ~= 2
+    plot3( observer(i,1) , observer(i,2) , 0.3 , ...
+           'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'k' );  
+end
+
+%Plot the observers
+gre_set_extreme = cvar_gre_set_store{2};
+for i = 1 : length(gre_set_extreme)
+plot3( observer(gre_set_extreme(i),1) , observer(gre_set_extreme(i),2) , 0.3 , ...
+           'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'r' );  
+
+patch( V{gre_set_extreme(i)}(:,1) , V{gre_set_extreme(i)}(:,2) ,...
+    0.1*ones( size(V{gre_set_extreme(i)},1) , 1 ) , ...
+        'w',   'EdgeColor' , 'None',   'FaceColor' , [0.9, 0.5, 0.44] , 'linewidth' , 1.0 ); 
+
+end
 %  %% *** cvar optimal ***
 %  % the sampling times for approximating CVaR
 % n_s = 50; 

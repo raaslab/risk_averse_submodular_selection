@@ -1,17 +1,17 @@
 % maximize the CVaR function
 % calculate the cvar by a greedy approach
 
-function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
+function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
     CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s)
    
    %the upper bound for tau is Visi_region. 
    global N M All_visi
    
    % the upper bound for \tau should be the area of all visibile region. 
-   tau_bound = round(All_visi)+1; 
+   % tau_bound = round(All_visi)+1; 
    
    %%when use sum
-   %tau_bound = N * round(max(vis_area(:)));
+   tau_bound = N * round(max(vis_area(:)));
   
    % the number of tau(s), tau_bound/delta+1, for each tau, we calculate
    % the greedily selected set and the cvar 
@@ -19,6 +19,8 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
    
    %store the H value
    H_value = zeros(n_tau, 1);
+   
+   tau_hvalue = zeros(n_tau, 2);
    
    %store the upper bound of H* 
    H_star_value = zeros(n_tau, 1); 
@@ -91,10 +93,12 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
         %store set in the second to end
         H_set(cnt, :) = gre_set;
          
+        %store tau_hvalue
+        tau_hvalue(cnt, :) = [tau, H_last]; 
         %after we have the H_value, we can decide which one to choose by
         % 1-1/e for the uniform matroid
         % for each tau we have an upper bound for each H_star_values. (H(s*, iDelta))
-        H_star_value(cnt) = H_value(cnt); % + (1/exp(1))* tau * (1/alpha -1); 
+        H_star_value(cnt) = H_value(cnt);% + (1/exp(1))* tau * (1/alpha -1); 
         
         %counter plus 1
         cnt = cnt +1;      
@@ -116,6 +120,6 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
    %[area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
  
    %let's plot the distribution of the union area
-   uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
-   %uarea_dis = uarea_distribution_sum(cvar_gre_set, vis_area, sensor_success_sample, n_s);
+   %uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
+   uarea_dis = uarea_distribution_sum(cvar_gre_set, vis_area, sensor_success_sample, n_s);
 end

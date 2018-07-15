@@ -114,7 +114,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
          %calculate the H* value in the partition case
          H_star_value(cnt) = H_value(cnt); %+ (1/2)* tau * (1/alpha -1);  
                 
-         cnt = cnt + 1;     
+         cnt = cnt + 1; 
     end
     % tau_loop ends    
     

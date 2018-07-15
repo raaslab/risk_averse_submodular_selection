@@ -82,7 +82,7 @@ Y_MAX = environment_max_y+0.1*(environment_max_y-environment_min_y);
 
 
 %Clear plot and form window with desired properties
-clf; set(gcf,'position',[200 500 700 600]); hold on;
+figure(1), clf; set(gcf,'position',[200 500 700 600]); hold on;
 axis equal; axis off; axis([X_MIN X_MAX Y_MIN Y_MAX]);
 
 
@@ -97,8 +97,8 @@ end
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
 global N M 
-N = 5; 
-M = 3; %choose five
+N = 10; 
+M = 5; %choose five
 observer = []; 
 V = cell(1,N); 
 vis_binary = cell(1,N);
@@ -170,7 +170,7 @@ cvar_gre_uadis_store ={};
 cnt_alpha = 1; 
 
 
-for alpha = 0.001 : 0.3 : 1
+for alpha = 0.01 : 0.3 : 1
     %alpha = 0.35; 
     % CVaR + greedy
     [cvar_gre_set, cvar_gre_hvalue, uarea_dis] = ...
@@ -182,10 +182,10 @@ for alpha = 0.001 : 0.3 : 1
     cnt_alpha = cnt_alpha + 1; 
 end
 
-%hvalue and its bound plot
-figure (1)
-plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on 
-%plot(cvar_gre_hbmax_store(:,1), cvar_gre_hbmax_store(:,2), 'bo'), hold on
+% %hvalue and its bound plot
+% figure (1)
+% plot(cvar_gre_h_store(:,1), cvar_gre_h_store(:,2), 'r*'), hold on
+% %plot(cvar_gre_hbmax_store(:,1), cvar_gre_hbmax_store(:,2), 'bo'), hold on
 
 %distribution plot
 figure (2)
@@ -195,66 +195,66 @@ nhist(cvar_gre_uadis_store, 'legend', {'alpha=0.01', 'alpha=0.31', 'alpha=0.61',
 % %real case illustration
 % figure (4)
 
- %% *** cvar optimal ***
- % the sampling times for approximating CVaR
-n_s = 50; 
-
-
-i = 2; 
-for alpha = 0.01 : 0.3 : 1
-%alpha = 0.05; 
-% opt + greedy
-[cvar_opt_set, cvar_opt_hvalue, uarea_dis] = ...
-    CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);  
-
-i = i +1;
-end
-
-% cvar_opt_value_area_pro = [];
-% % % cvar+ opt
-% [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
-%     CVaR_optimal(vis_binary, alpha, delta, n_s); 
-%  
-% cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
-%     cvar_opt_area_temp, cvar_opt_p_temp]];   
+%  %% *** cvar optimal ***
+%  % the sampling times for approximating CVaR
+% n_s = 50; 
 % 
-% %cvar + opt
-% figure (5)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
 % 
-% figure (6)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,3), 'bo'); hold on
+% i = 2; 
+% for alpha = 0.01 : 0.3 : 1
+% %alpha = 0.05; 
+% % opt + greedy
+% [cvar_opt_set, cvar_opt_hvalue, uarea_dis] = ...
+%     CVaR_optimal(vis_binary, alpha, delta, pr_sensor, n_s);  
 % 
-% figure(7)
-% plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
-
-%% ***expectation + greedy***
-n_s = 2000; 
-% expt_gre_set_store = []; 
-% for n_s = 1000 : 100: 3000
-% 
-%  [expt_gre_set, expt_gre_value, expt_gre_uarea, expt_gre_uprob]...
-%      = expectation_greedy(vis_binary, pr_sensor, n_s); 
-%  
-%  expt_gre_set_store = [expt_gre_set_store; expt_gre_set]; 
+% i = i +1;
 % end
-
-[expt_gre_set, expt_gre_value,...
-    n_sen_dis]  = expectation_greedy(vis_binary, pr_sensor, n_s);
-
-figure (9)
-
-plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
-
-%% ***expectation + optimal***
-
-
-% [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
-
-
-% %Plot the observers
-% plot3( observer(1,1) , observer(1,2) , 0.3 , ...
-%            'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'r' );  
-
-% patch( V{2}(:,1) , V{2}(:,2) , 0.1*ones( size(V{2},1) , 1 ) , ...
-%         'w',   'EdgeColor' , 'None',   'FaceColor' , [0.9, 0.5, 0.44] , 'linewidth' , 1.0 ); 
+% 
+% % cvar_opt_value_area_pro = [];
+% % % % cvar+ opt
+% % [cvar_opt_set, cvar_opt_value, probability_sensor] = ...
+% %     CVaR_optimal(vis_binary, alpha, delta, n_s); 
+% %  
+% % cvar_opt_value_area_pro = [cvar_opt_value_area_pro; [alpha, cvar_opt_value, ...
+% %     cvar_opt_area_temp, cvar_opt_p_temp]];   
+% % 
+% % %cvar + opt
+% % figure (5)
+% % plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,2), 'r*'); hold on
+% % 
+% % figure (6)
+% % plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,3), 'bo'); hold on
+% % 
+% % figure(7)
+% % plot(cvar_opt_value_area_pro(:,1), cvar_opt_value_area_pro(:,4), 'm+'); hold on
+% 
+% %% ***expectation + greedy***
+% n_s = 2000; 
+% % expt_gre_set_store = []; 
+% % for n_s = 1000 : 100: 3000
+% % 
+% %  [expt_gre_set, expt_gre_value, expt_gre_uarea, expt_gre_uprob]...
+% %      = expectation_greedy(vis_binary, pr_sensor, n_s); 
+% %  
+% %  expt_gre_set_store = [expt_gre_set_store; expt_gre_set]; 
+% % end
+% 
+% [expt_gre_set, expt_gre_value,...
+%     n_sen_dis]  = expectation_greedy(vis_binary, pr_sensor, n_s);
+% 
+% figure (9)
+% 
+% plot(n_sen_dis(:,1), n_sen_dis(:,2), 'r+')  
+% 
+% %% ***expectation + optimal***
+% 
+% 
+% % [expt_opt_area_temp, expt_opt_p_temp] = union_area_p(expt_opt_set, vis_binary, pr_sensor); 
+% 
+% 
+% % %Plot the observers
+% % plot3( observer(1,1) , observer(1,2) , 0.3 , ...
+% %            'o' , 'Markersize' , 9 , 'MarkerEdgeColor' , 'y' , 'MarkerFaceColor' , 'r' );  
+% 
+% % patch( V{2}(:,1) , V{2}(:,2) , 0.1*ones( size(V{2},1) , 1 ) , ...
+% %         'w',   'EdgeColor' , 'None',   'FaceColor' , [0.9, 0.5, 0.44] , 'linewidth' , 1.0 ); 

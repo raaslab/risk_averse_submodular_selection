@@ -8,7 +8,7 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
    global N M All_visi
    
    % the upper bound for \tau should be the area of all visibile region. 
-   tau_bound = round(All_visi)+1; 
+   %tau_bound = round(All_visi)+1; 
    
    %%when use sum
    %tau_bound = N * round(max(vis_area(:)));
@@ -116,6 +116,6 @@ function [cvar_gre_set, cvar_gre_value, uarea_dis] = ...
    %[area_p_dis] = area_p_distribution(cvar_gre_set, vis_binary, pr_sensor);
  
    %let's plot the distribution of the union area
-   uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
-   %uarea_dis = uarea_distribution_sum(cvar_gre_set, vis_area, sensor_success_sample, n_s);
+   %uarea_dis = uarea_distribution(cvar_gre_set, vis_binary, sensor_success_sample, n_s);
+   uarea_dis = uarea_distribution_sum(cvar_gre_set, vis_area, sensor_success_sample, n_s);
 end

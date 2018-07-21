@@ -1,7 +1,7 @@
 % maximize the CVaR function
 % calculate the cvar by a greedy approach
 
-function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
+function [cvar_gre_set, cvar_gre_value, cvar_gre_add, tau_hvalue, uarea_dis] = ...
     CVaR_greedy(vis_area, vis_binary, alpha, delta, sensor_success_sample, n_s)
    
    %the upper bound for tau is Visi_region. 
@@ -20,6 +20,8 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
    %store the H value
    H_value = zeros(n_tau, 1);
    
+   H_curv = zeros(n_tau, 2);
+   
    tau_hvalue = zeros(n_tau, 2);
    
    %store the upper bound of H* 
@@ -36,6 +38,8 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
         
         %set greedy set for each tau to be empty
         gre_set = []; 
+        
+        max_curv =[];
                 
         % at each round, H_value at last round is the same. 
         % This value needs to be updated 
@@ -49,6 +53,7 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
             % marginal gain, and the H_value at each round. Note that, the size of the matix
             % will decrease 1 at each round. 
             margin_gain = [];
+            curv = []; 
                         
             % choose one sensor from N/( already selected) which has the maximum marginal gain 
             for j = 1 : N
@@ -60,7 +65,11 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
                        tau, alpha, vis_area, vis_binary, sensor_success_sample, n_s);
 
                    margin_gain_j =  H_current_j - H_last; 
-
+                   
+                   %store the greedy curvature in the marginal gain
+                   
+                   curv = [curv, 1 - margin_gain_j/(H_current_j-tau * (1 - 1/alpha))]; 
+                   
                    margin_gain = [margin_gain; [j, margin_gain_j, H_current_j]];   
 
 
@@ -78,6 +87,7 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
              % put the associated sensor j in the greedy set
                gre_set = [gre_set, margin_gain(max_inx,1)];
                
+               max_curv = [max_curv, max(curv)];
              % H_last_round needs to be updated
              % updated by the associated H_current_round 
                H_last  = margin_gain(max_inx, 3); 
@@ -92,6 +102,8 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
         
         %store set in the second to end
         H_set(cnt, :) = gre_set;
+        
+        H_curv(cnt, :) = [tau, max(max_curv)]; 
          
         %store tau_hvalue
         tau_hvalue(cnt, :) = [tau, H_last]; 
@@ -114,6 +126,9 @@ function [cvar_gre_set, cvar_gre_value, tau_hvalue, uarea_dis] = ...
    
    % find the associated cvar_gre_value by the greedy approach
    cvar_gre_value = H_value(max_Hstar_inx);
+   
+   cvar_gre_add = H_curv(max_Hstar_inx, 1)*(1/alpha - 1) * ...
+           H_curv(max_Hstar_inx, 2)/(1 + H_curv(max_Hstar_inx, 2));
    
    %calculate disterminstic u_area and u_prob
    %[cvar_gre_uarea, cvar_gre_uprob] = union_area_p(cvar_gre_set, vis_binary, pr_sensor); 

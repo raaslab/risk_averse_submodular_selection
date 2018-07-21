@@ -1,5 +1,6 @@
 % cvar greedy for multi-robot assignment
-function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_star_value, H_set, ...
+function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, cvar_gre_add,...
+    cvar_gre_tau,cvar_gre_curv, tau_hvalue, H_star_value, H_set, ...
     max_hstar_bound] = CVaR_greedy_matching(robot_demand_sample, alpha, delta, ...
     n_s, one_demand_bound)
 
@@ -13,6 +14,8 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
     
     %store the H value
     H_value = zeros(n_tau, 1);
+    
+    H_curv = zeros(n_tau, 2);
     %store tau and H_value
     tau_hvalue = zeros(n_tau, 2);
    
@@ -39,8 +42,9 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
         
         % keep track of the taxi has been assigned, becaue a taxi can be
         % assigned at most once. 
-        gre_selected = [ ];
+        gre_selected = [];
         
+        max_curv = [];
         
         % we need to initialize the previous greedy values
         gre_hvalue_last  = tau * (1 - 1/alpha); 
@@ -58,6 +62,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
               margin_inx = zeros(N, R - length(gre_selected)); 
               margin_gain = zeros (N, R-  length(gre_selected)); 
               hvalue_current = zeros(N, R - length(gre_selected)); 
+              curv = zeros(N, R - length(gre_selected)); 
              
               % N demand locaions
               for i  =  1 : N
@@ -72,7 +77,9 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
                       
                           margin_inx(i, cnt_j) = j; 
                           margin_gain(i, cnt_j) = margin_hvalue_ij; 
-                          hvalue_current(i, cnt_j) = gre_current_ij;     
+                          hvalue_current(i, cnt_j) = gre_current_ij; 
+                          curv(i, cnt_j) = 1 - ...
+                              margin_hvalue_ij/(gre_current_ij- tau * (1 - 1/alpha)); 
                           
                           cnt_j = cnt_j + 1; 
                       else % skip j
@@ -94,6 +101,9 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
                % update the gre_set_selected, actually, the union of all gre_set is
                % gre_set_selected
                gre_selected = [gre_selected, margin_inx(row_inx, col_inx)]; 
+               
+               max_curv = [max_curv, max(curv(:))]; 
+              
               
                %update the  gre_hvalue_last     
                gre_hvalue_last = hvalue_current(row_inx, col_inx); 
@@ -108,6 +118,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
          %*** this step needs further checking!!!***
          H_value(cnt) = gre_hvalue_last; 
          
+         H_curv(cnt, :) = [tau, max(max_curv)]; 
          %store tau_hvalue
          tau_hvalue(cnt, :) = [tau, gre_hvalue_last]; 
          
@@ -131,6 +142,11 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, tau_hvalue, H_st
        % find the associated cvar_gre_value by the greedy approach
        cvar_gre_hvalue = H_value(max_Hstar_inx);
        
+       %calculate the additivity term
+       cvar_gre_tau = H_curv(max_Hstar_inx, 1);
+       cvar_gre_curv =  H_curv(max_Hstar_inx, 2); 
+       cvar_gre_add = cvar_gre_tau*(1/alpha - 1) * ...
+           cvar_gre_curv/(1 + cvar_gre_curv);        
        %calculate the uncertainty, we know that the mean and the
        %uncertainty for poisson distribution are the same. 
        [cvar_gre_distribution] = efficiency_distribution(cvar_gre_set, robot_demand_sample, n_s);

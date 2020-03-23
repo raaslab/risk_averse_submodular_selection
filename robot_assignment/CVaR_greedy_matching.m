@@ -102,8 +102,7 @@ function [cvar_gre_set, cvar_gre_distribution, cvar_gre_hvalue, cvar_gre_add,...
                % gre_set_selected
                gre_selected = [gre_selected, margin_inx(row_inx, col_inx)]; 
                
-               max_curv = [max_curv, max(curv(:))]; 
-              
+               max_curv = [max_curv, max(curv(:))];              
               
                %update the  gre_hvalue_last     
                gre_hvalue_last = hvalue_current(row_inx, col_inx); 

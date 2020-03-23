@@ -16,7 +16,7 @@
 %Clear the desk
 clear all; close all; clc;
 format long;
-
+%%
 
 %Robustness constant
 epsilon = 0.000000001;
@@ -32,7 +32,7 @@ snap_distance = 0.05;
 
 
 % define the environment by hand.
-environment = cell(1,10);
+%environment = env; 
 environment{1,1} = [0, 0; 9, 0; 9, 9; 0, 9]; % the boundary of the environment, clockwise order
 % for all the obstacles, should be counter clockwise order
 environment{1,2} = [0.45, 6.9; 0.27, 6.9; 0.27, 7.5; 1.92, 7.5; 1.92, 6.9; 1.755, 6.9; 1.755, 5.85; 0.45, 5.85]; 
@@ -57,12 +57,12 @@ envi_area = zeros(1,9);
 global All_visi poly_large
 
 %how many times we enlarge the polygon
-poly_large = 100; 
+poly_large = 1; 
 
 for i = 1 : 9 
     %calculate the binary of the environment, 100 times  
-    envi_binary{i} = poly2mask(poly_large*[environment{1,i+1}(:,1); environment{1,i+1}(1,1)], ...
-        poly_large*[environment{1,i+1}(:,2); environment{1,i+1}(1,2)], 9*poly_large, 9*poly_large); 
+    envi_binary{i} = poly2mask(poly_large*[environment{1,i}(:,1); environment{1,i}(1,1)], ...
+        poly_large*[environment{1,i}(:,2); environment{1,i}(1,2)], 9*poly_large, 9*poly_large); 
     envi_area(1,i) = bwarea(envi_binary{i})/(poly_large^2); 
     
 end
@@ -71,10 +71,10 @@ All_visi = 9*9-sum_envi_area;
 
 
 %Calculate a good plot window (bounding box) based on outer polygon of environment
-environment_min_x = min(environment{1}(:,1));
-environment_max_x = max(environment{1}(:,1));
-environment_min_y = min(environment{1}(:,2));
-environment_max_y = max(environment{1}(:,2));
+environment_min_x = min(environment{10}(:,1));
+environment_max_x = max(environment{10}(:,1));
+environment_min_y = min(environment{10}(:,2));
+environment_max_y = max(environment{10}(:,2));
 X_MIN = environment_min_x-0.1*(environment_max_x-environment_min_x);
 X_MAX = environment_max_x+0.1*(environment_max_x-environment_min_x);
 Y_MIN = environment_min_y-0.1*(environment_max_y-environment_min_y);
@@ -87,12 +87,14 @@ axis equal; axis off; axis([X_MIN X_MAX Y_MIN Y_MAX]);
 
 
 %Plot Environment
-patch( environment{1}(:,1) , environment{1}(:,2) , 0.1*ones(1,length(environment{1}(:,1)) ) , ...
+patch( environment{10}(:,1) , environment{10}(:,2) , 0.1*ones(1,length(environment{10}(:,1)) ) , ...
        'w' , 'linewidth' , 1.0 );
-for i = 2 : size(environment,2)
+
+for i = 1 : size(environment,2)-1
     patch( environment{i}(:,1) , environment{i}(:,2) , 0.1*ones(1,length(environment{i}(:,1)) ) , ...
            'k' , 'EdgeColor' , [0.7 0.7 0.7] , 'FaceColor' , [0.7 0.7 0.7] , 'linewidth' , 1.5 );
 end
+
 
 % fix the initial setting of sensors' positions
 %we need to select 5 from 8 sensors to turn them on
@@ -121,8 +123,8 @@ end
 % 5.0 2.5; 7.368 6.554; 7.534 8.74; 1.5 2.3; 3 5.37];
 % 
 
-[~,idx] = sort(observer(:,1)); % sort just the first column
-observer = observer(idx,:);   % sort the whole matrix using the sort indices
+% [~,idx] = sort(observer(:,1)); % sort just the first column
+% observer = observer(idx,:);   % sort the whole matrix using the sort indices
 
 
 for i = 1 : N
@@ -146,6 +148,8 @@ for i = 1 : N
     % larger it will fail. pr_sensor is the survival rate.
     pr_sensor(1, i ) = 1- vis_area(1, i)/(All_visi/2); 
 end
+
+%%
 
 % the sampling times for approximating CVaR
 n_s = 1000; 
@@ -268,7 +272,6 @@ plot3( observer(gre_set_extreme(i),1) , observer(gre_set_extreme(i),2) , 0.3 , .
 patch( V{gre_set_extreme(i)}(:,1) , V{gre_set_extreme(i)}(:,2) ,...
     0.1*ones( size(V{gre_set_extreme(i)},1) , 1 ) , ...
         'w',   'EdgeColor' , 'None',   'FaceColor' , [0.9, 0.5, 0.44] , 'linewidth' , 1.0 ); 
-
 end
 %  %% *** cvar optimal ***
 %  % the sampling times for approximating CVaR

@@ -75,14 +75,14 @@ cvar_gre_curv_store=[];
 
 
 %alpha_store = [0.001, 0.01, 0.03, 0.05, 0.08, 0.1, 0.2, 0.3, 0.4 0.5, 0.6, 0.7, 0.8,  0.9, 1]; 
-%alpha_store = [0.001, 0.01, 0.1, 0.3, 0.6, 0.9, 1]; 
-alpha_store = [0.1,1];
+alpha_store = [0.001, 0.01, 0.1, 0.3, 0.6, 0.9, 1]; 
+%alpha_store = [0.1,1];
 
 for i = 1 : length(alpha_store)
 % cvar_greedy_approach, using compact vector for samples
 alpha = alpha_store(i); 
 
-[cvar_gre_set, cvar_gre_dis, cvar_gre_hvalue, cvar_gre_add,cvar_gre_tau,cvar_gre_curv, tau_hvalue, H_star_value, H_set, max_hstar_bound] = ...
+[cvar_gre_set, cvar_gre_dis, cvar_gre_hvalue, cvar_gre_add, cvar_gre_tau, cvar_gre_curv, tau_hvalue, H_star_value, H_set, max_hstar_bound] = ...
     CVaR_greedy_matching(robot_demand_sample, alpha, delta, n_s, one_demand_bound);
 
 % % cvar_greedy_approach, using individual samples
@@ -118,10 +118,10 @@ plot(cvar_gre_curv_store(:,1), cvar_gre_curv_store(:,2), 'b*'), hold on
 
 %distribution plot
 figure (5)
-%  nhist(cvar_gre_dis_store, 'legend', {'$$\alpha=0.001$$', '$$\alpha=0.01$$', ...
-%      '$$\alpha=0.01$$', '$$\alpha=0.3$$', ...
-%      '$$\alpha=0.6$$', '$$\alpha=0.9$$', '$$\alpha=1$$'}); 
-nhist(cvar_gre_dis_store, 'legend', {'alpha=0.1', 'alpha=1'})
+ nhist(cvar_gre_dis_store, 'legend', {'$$\alpha=0.001$$', '$$\alpha=0.01$$', ...
+     '$$\alpha=0.01$$', '$$\alpha=0.3$$', ...
+     '$$\alpha=0.6$$', '$$\alpha=0.9$$', '$$\alpha=1$$'}); 
+%nhist(cvar_gre_dis_store, 'legend', {'alpha=0.1', 'alpha=1'})
 
 % figure (4)
 % for i = 1 : length(alpha_store)
